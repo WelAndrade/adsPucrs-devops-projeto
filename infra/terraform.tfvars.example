@@ -1,0 +1,5 @@
+aws_region      = "us-east-1"
+project_name    = "devops-pucrs"
+environment     = "dev"
+instance_type   = "t2.micro"
+public_key_path = "~/.ssh/id_rsa.pub"

@@ -1,0 +1,14 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+override.tf
+
+# Go binary
+app/devops-pucrs
+app/*.exe
+
+# Local
+CLAUDE.md
+.env
