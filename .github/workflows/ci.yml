@@ -22,6 +22,7 @@ jobs:
         with:
           go-version: "1.22"
           cache: true
+          cache-dependency-path: app/go.sum
 
       - run: go vet ./...
         working-directory: app
@@ -30,10 +31,10 @@ jobs:
         working-directory: app
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
 
   infra-validate:
     name: Terraform Validate
