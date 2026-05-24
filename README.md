@@ -1,7 +1,7 @@
 # DevOps na Prática — Projeto Final
 
 **Disciplina:** DevOps na Prática — PUCRS ADS  
-**Repositório:** [github.com/SEU_USUARIO/adsPucrs-devops-projeto](https://github.com/SEU_USUARIO/adsPucrs-devops-projeto)
+**Repositório:** [github.com/WelAndrade/adsPucrs-devops-projeto](https://github.com/WelAndrade/adsPucrs-devops-projeto)
 
 ---
 
@@ -143,7 +143,7 @@ Internet
 
 ### a) Configuração do Repositório de Código
 
-**Repositório:** [github.com/SEU_USUARIO/adsPucrs-devops-projeto](https://github.com/SEU_USUARIO/adsPucrs-devops-projeto)
+**Repositório:** [github.com/WelAndrade/adsPucrs-devops-projeto](https://github.com/WelAndrade/adsPucrs-devops-projeto)
 
 O repositório foi criado no GitHub com a seguinte configuração:
 
@@ -180,7 +180,7 @@ adsPucrs-devops-projeto/
 ### b) Implementação do Pipeline de CI com GitHub Actions
 
 **Arquivo:** `.github/workflows/ci.yml`  
-**Repositório:** [github.com/SEU_USUARIO/adsPucrs-devops-projeto](https://github.com/SEU_USUARIO/adsPucrs-devops-projeto)
+**Repositório:** [github.com/WelAndrade/adsPucrs-devops-projeto](https://github.com/WelAndrade/adsPucrs-devops-projeto)
 
 O pipeline é declarado em YAML e executado nos runners gratuitos do GitHub (`ubuntu-latest`). Não requer nenhuma infraestrutura adicional para a etapa de CI.
 
@@ -216,7 +216,7 @@ TestHealthHandler → verifica que GET /health retorna HTTP 200
 ### a) Scripts para Provisionamento de Infraestrutura
 
 **Ferramenta:** Terraform >= 1.6  
-**Repositório:** [github.com/SEU_USUARIO/adsPucrs-devops-projeto](https://github.com/SEU_USUARIO/adsPucrs-devops-projeto) — diretório `infra/`
+**Repositório:** [github.com/WelAndrade/adsPucrs-devops-projeto](https://github.com/WelAndrade/adsPucrs-devops-projeto) — diretório `infra/`
 
 Os scripts Terraform provisionam toda a infraestrutura AWS necessária para hospedar a aplicação. O `user_data` da EC2 instala o Docker automaticamente na primeira inicialização da instância, preparando o ambiente para a containerização na Fase 2 sem necessidade de intervenção manual.
 
@@ -263,7 +263,7 @@ cd infra && terraform destroy
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/SEU_USUARIO/adsPucrs-devops-projeto.git
+git clone https://github.com/WelAndrade/adsPucrs-devops-projeto.git
 cd adsPucrs-devops-projeto
 ```
 
