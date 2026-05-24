@@ -10,6 +10,8 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   AWS_REGION: us-east-1
   ECR_REPOSITORY: devops-pucrs-dev
+  ECS_CLUSTER: devops-pucrs-dev
+  ECS_SERVICE: devops-pucrs-dev
 
 jobs:
   deploy:
@@ -55,36 +57,30 @@ jobs:
           docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}
           docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1
+      - name: Deploy to ECS
         env:
-          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          ECR_REPO: ${{ env.ECR_REPOSITORY }}
-          AWS_REGION: ${{ env.AWS_REGION }}
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          envs: ECR_REGISTRY,ECR_REPO,AWS_REGION
-          script: |
-            aws ecr get-login-password --region $AWS_REGION | \
-              docker login --username AWS --password-stdin $ECR_REGISTRY
-            docker stop app 2>/dev/null || true
-            docker rm app 2>/dev/null || true
-            docker pull $ECR_REGISTRY/$ECR_REPO:latest
-            docker run -d \
-              --name app \
-              --restart unless-stopped \
-              --log-driver awslogs \
-              --log-opt awslogs-region=$AWS_REGION \
-              --log-opt awslogs-group=/devops-pucrs/dev/app \
-              -p 8080:8080 \
-              $ECR_REGISTRY/$ECR_REPO:latest
+          IMAGE: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}
+        run: |
+          TASK_DEF=$(aws ecs describe-task-definition \
+            --task-definition ${{ env.ECS_SERVICE }} \
+            --query taskDefinition --output json | \
+            jq --arg img "$IMAGE" '
+              .containerDefinitions[0].image = $img |
+              del(.taskDefinitionArn,.revision,.status,.requiresAttributes,
+                  .placementConstraints,.compatibilities,.registeredAt,.registeredBy)')
+          NEW_ARN=$(aws ecs register-task-definition \
+            --cli-input-json "$TASK_DEF" \
+            --query taskDefinition.taskDefinitionArn --output text)
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --task-definition "$NEW_ARN"
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }}
 
       - name: Smoke test
-        run: |
-          sleep 15
-          curl -f http://${{ secrets.EC2_HOST }}:8080/health
+        run: curl -f http://${{ secrets.EC2_HOST }}:8080/health
 
       - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
