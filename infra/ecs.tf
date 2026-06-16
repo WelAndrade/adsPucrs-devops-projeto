@@ -9,8 +9,9 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
 
   container_definitions = jsonencode([{
-    name  = "app"
-    image = "${aws_ecr_repository.app.repository_url}:latest"
+    name   = "app"
+    image  = "${aws_ecr_repository.app.repository_url}:latest"
+    memory = 512
     portMappings = [{
       containerPort = 8080
       protocol      = "tcp"
