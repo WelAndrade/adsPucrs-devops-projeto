@@ -1,3 +1,3 @@
 module devops-pucrs
 
-go 1.24
+go 1.25
